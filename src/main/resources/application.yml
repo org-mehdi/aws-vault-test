@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+aws:
+  region: ca-central-1  # Default region (override via env var)
+
+# Disable AWS credentials auto-configuration (we'll handle it manually)
+spring:
+  config:
+    import: optional:aws-secretsmanager:${aws.secret-name}
