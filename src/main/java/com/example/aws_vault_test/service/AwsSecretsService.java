@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class AwsSecretsService {
     @Value("${aws.region:ca-central-1}")
     private String region;
 
+    private static final Logger log = LoggerFactory.getLogger(AwsSecretsService.class);
     private SecretsManagerClient secretsClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -35,6 +38,7 @@ public class AwsSecretsService {
                 .region(Region.of(Region.CA_CENTRAL_1.id()))
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
+        log.info("Initialized SecretsManagerClient for region: {}", region);
     }
 
     /**
@@ -47,6 +51,7 @@ public class AwsSecretsService {
                     .map(SecretListEntry::name)
                     .toList();
         } catch (SecretsManagerException e) {
+            log.error("Failed to list secrets", e);
             throw new RuntimeException("Failed to list secrets: " + e.getMessage(), e);
         }
     }
@@ -69,6 +74,7 @@ public class AwsSecretsService {
                return "No secret data found";
             }
         } catch (SecretsManagerException e) {
+            log.error("Failed to retrieve secret '{}'", secretName, e);
             throw new RuntimeException("Failed to retrieve secret '" + secretName + "': " + e.getMessage(), e);
         }
     }
@@ -98,6 +104,7 @@ public class AwsSecretsService {
      * @param description Optional description
      */
     public String createSecret(String secretName, String secretValue, String description) {
+        log.debug("Creating secret: {}", secretName);
         try {
             CreateSecretRequest.Builder requestBuilder = CreateSecretRequest.builder()
                     .name(secretName)
@@ -108,8 +115,11 @@ public class AwsSecretsService {
             }
 
             CreateSecretResponse response = secretsClient.createSecret(requestBuilder.build());
-            return response.arn();
+            String arn = response.arn();
+            log.info("Created secret: {} (ARN: {})", secretName, arn);
+            return arn;
         } catch (SecretsManagerException e) {
+            log.error("Failed to create secret '{}'", secretName, e);
             throw new RuntimeException("Failed to create secret '" + secretName + "': " + e.getMessage(), e);
         }
     }
@@ -118,6 +128,7 @@ public class AwsSecretsService {
     public void close() {
         if (secretsClient != null) {
             secretsClient.close();
+            log.info("Closed SecretsManagerClient");
         }
     }
 
