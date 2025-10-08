@@ -29,10 +29,5 @@ jobs:
       - name: Build with Maven
         run: mvn -B package -DskipTests
 
-      - name: Start Application in Background
+      - name: Start Application
         run: java -jar target/aws-vault-test-0.0.1-SNAPSHOT.jar
-      
-      - name: Get All Secret Names
-        run: |
-          echo "=== SECRET NAMES ==="
-          curl -s http://localhost:8080/api/v1/secrets/names | jq .
