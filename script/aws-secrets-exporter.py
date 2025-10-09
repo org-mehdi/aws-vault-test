@@ -46,4 +46,6 @@ def migrate_secrets():
         #write_to_vault(name, value)
 
 if __name__ == "__main__":
+    print("Starting migration...")
     migrate_secrets()
+    print("Migration completed.")
