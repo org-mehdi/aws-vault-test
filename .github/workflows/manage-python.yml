@@ -35,21 +35,21 @@ jobs:
           aws-region: ca-central-1
           role-session-name: ${{ github.run_id }}-session
 
-      - name: Request OIDC ID token for Vault
-        id: id-token
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const core = require('@actions/core')
-            // getIDToken is provided by the actions toolkit when `id-token: write` permission is granted
-            const token = await core.getIDToken('vault')
-            core.setOutput('token', token)
+      # - name: Request OIDC ID token for Vault
+      #   id: id-token
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: |
+      #       const core = require('@actions/core')
+      #       // getIDToken is provided by the actions toolkit when `id-token: write` permission is granted
+      #       const token = await core.getIDToken('vault')
+      #       core.setOutput('token', token)
 
-      - name: Export VAULT_OIDC_JWT
-        run: echo "VAULT_OIDC_JWT=${{ steps.id-token.outputs.token }}" >> $GITHUB_ENV
+      # - name: Export VAULT_OIDC_JWT
+      #   run: echo "VAULT_OIDC_JWT=${{ steps.id-token.outputs.token }}" >> $GITHUB_ENV
 
-      - name: Ensure script is executable
-        run: chmod +x script/aws-secrets-exporter.py
+      # - name: Ensure script is executable
+      #   run: chmod +x script/aws-secrets-exporter.py
 
       - name: Run aws-secrets-exporter.py
         env:
