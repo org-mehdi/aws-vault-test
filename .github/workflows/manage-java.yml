@@ -2,6 +2,11 @@ name: AWS Secrets Manager
 
 on:
   workflow_dispatch:  # Allows manual triggering
+    inputs:
+      aws_role:
+        description: 'Role to assume'
+        required: true
+        type: string
 
 permissions:
   id-token: write
@@ -23,7 +28,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::497241180797:role/test-role-github-oidc
+          role-to-assume: ${{ github.event.inputs.aws_role }}
           aws-region: ca-central-1
 
       - name: Build with Maven
