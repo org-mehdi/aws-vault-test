@@ -15,9 +15,9 @@ public class AwsVaultTestApplication implements CommandLineRunner {
     private AwsSecretsService secretsService;
 	
 	public static void main(String[] args) {
-		System.out.println("--- STARTING THE APPLICATION ---");
 		SpringApplication application = new SpringApplication(AwsVaultTestApplication.class);
 		application.setWebApplicationType(WebApplicationType.NONE);
+        System.out.println("--- STARTING THE APPLICATION ---");
 		application.run(args);
 		System.out.println("--- APPLICATION FINISHED ---");
 	}

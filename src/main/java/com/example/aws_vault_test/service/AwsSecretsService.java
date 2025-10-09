@@ -30,12 +30,14 @@ public class AwsSecretsService {
 
     private static final Logger log = LoggerFactory.getLogger(AwsSecretsService.class);
     private SecretsManagerClient secretsClient;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * Create a Secrets Manager client
+     */
     @PostConstruct
     public void initializeClient() {
         this.secretsClient = SecretsManagerClient.builder()
-                .region(Region.of(Region.CA_CENTRAL_1.id()))
+                .region(Region.of("ca-central-1"))
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
         log.info("Initialized SecretsManagerClient for region: {}", region);
