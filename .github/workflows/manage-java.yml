@@ -30,6 +30,7 @@ jobs:
         with:
           role-to-assume: ${{ github.event.inputs.aws_role }}
           aws-region: ca-central-1
+          role-session-name: ${{ github.run_id }}-session
 
       - name: Build with Maven
         run: mvn -B package -DskipTests

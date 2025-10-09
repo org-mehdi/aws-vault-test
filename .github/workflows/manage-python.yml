@@ -1,0 +1,61 @@
+name: Py - AWS Secrets Manager
+
+on:
+  workflow_dispatch:  # Allows manual triggering
+    inputs:
+      aws_role:
+        description: 'Role to assume'
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          pip install boto3 hvac
+          
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ github.event.inputs.aws_role }}
+          aws-region: ca-central-1
+          role-session-name: ${{ github.run_id }}-session
+
+      - name: Request OIDC ID token for Vault
+        id: id-token
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const core = require('@actions/core')
+            // getIDToken is provided by the actions toolkit when `id-token: write` permission is granted
+            const token = await core.getIDToken('vault')
+            core.setOutput('token', token)
+
+      - name: Export VAULT_OIDC_JWT
+        run: echo "VAULT_OIDC_JWT=${{ steps.id-token.outputs.token }}" >> $GITHUB_ENV
+
+      - name: Ensure script is executable
+        run: chmod +x script/aws-secrets-exporter.py
+
+      - name: Run aws-secrets-exporter.py
+        env:
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          VAULT_ROLE: ${{ secrets.VAULT_ROLE }}
+        run: |
+          python script/aws-secrets-exporter.py
+
+
