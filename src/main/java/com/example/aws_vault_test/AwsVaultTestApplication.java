@@ -17,17 +17,17 @@ public class AwsVaultTestApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(AwsVaultTestApplication.class);
 		application.setWebApplicationType(WebApplicationType.NONE);
-        System.out.println("--- STARTING THE APPLICATION ---");
 		application.run(args);
-		System.out.println("--- APPLICATION FINISHED ---");
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println("Application context fully initialized!");
 		System.out.println("Getting secret names...");
-		secretsService.getAllSecretNames().forEach(System.out::println);
-
+		secretsService.getAllSecrets().forEach((name, value) -> {
+			System.out.println("Secret Name: " + name);
+			System.out.println("Secret Value: " + value);
+		});
 	}
 
 }
