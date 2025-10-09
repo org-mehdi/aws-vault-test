@@ -19,14 +19,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.11'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-      # - name: Install Python dependencies
-      #   run: |
-      #     pip install boto3 hvac
+      - name: Install Python dependencies
+        run: |
+          pip install boto3 hvac
           
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -52,8 +52,6 @@ jobs:
       #   run: chmod +x script/aws-secrets-exporter.py
 
       - name: Run aws-secrets-exporter.py
-        shell: sh
-
         env:
           VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
           VAULT_ROLE: ${{ secrets.VAULT_ROLE }}
