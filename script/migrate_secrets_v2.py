@@ -148,10 +148,10 @@ def migrate_secrets():
     
     # Initialize clients
     aws_sm = SecretsManager()
-    vault = VaultClient()
+    #vault = VaultClient()
     
     # Authenticate to Vault
-    vault.authenticate()
+    #vault.authenticate()
     
     # Get all secrets from AWS
     secrets = aws_sm.list_secrets(prefix=aws_secret_prefix)
