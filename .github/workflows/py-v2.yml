@@ -3,6 +3,10 @@ name: v2 - Migrate Secrets from AWS to Vault
 on:
   workflow_dispatch:
     inputs:
+      aws_role:
+        description: 'Role to assume'
+        required: true
+        type: string
       dry_run:
         description: 'Run in dry-run mode (no actual migration)'
         required: false
@@ -54,8 +58,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ github.event.inputs.aws_role }}
+          aws-region: ca-central-1
       
       - name: Verify AWS Authentication
         run: |
