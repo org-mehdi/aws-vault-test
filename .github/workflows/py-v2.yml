@@ -67,7 +67,7 @@ jobs:
       
       - name: Run Migration Script
         run: |
-          python migrate_secrets_v2.py
+          python script/migrate_secrets_v2.py
       
       - name: Migration Summary
         if: always()
