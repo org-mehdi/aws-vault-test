@@ -119,7 +119,7 @@ class VaultClient:
         
         # Assuming KV v2 engine mounted at 'secret'
         kv_mount = os.getenv('VAULT_KV_MOUNT', 'secret')
-        url = f"{self.vault_addr}/v1/{kv_mount}/data/{path}"
+        url = f"{self.vault_addr}/v1/{kv_mount}/data/{path}" #v1/ *kv/.../* /data/ *test/mysecret*
         
         payload = {'data': data}
         
