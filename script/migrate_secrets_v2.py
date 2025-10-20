@@ -141,6 +141,7 @@ def migrate_secrets():
     # Configuration
     aws_secret_prefix = os.getenv('AWS_SECRET_PREFIX', '')
     vault_path_prefix = os.getenv('VAULT_PATH_PREFIX', '')
+    vault_namespace = os.getenv('VAULT_NAMESPACE', '')
     dry_run = os.getenv('DRY_RUN', 'false').lower() == 'true'
     
     if dry_run:
@@ -190,6 +191,7 @@ def migrate_secrets():
         # Write to Vault
         if dry_run:
             print(f"  ✓ Would write to Vault (dry run)")
+            print(f"  URL Vault : "+f"http://localhost:8200/v1/{vault_namespace}kv/data/{vault_path}")
             successful += 1
         else:
             if vault.write_secret(vault_path, secret_data):
